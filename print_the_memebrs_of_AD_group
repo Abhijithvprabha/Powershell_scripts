@@ -1,0 +1,22 @@
+ print the members of an Active Directory group to the screen using PowerShell. Here's a script to accomplish that:
+
+
+# Import the Active Directory module
+Import-Module ActiveDirectory
+
+# Ask the user for the group name
+$groupName = Read-Host -Prompt 'Please enter the name of the AD security group'
+
+# Get the group
+$group = Get-ADGroup -Identity $groupName
+
+# Check if the group exists
+if ($group) {
+    # Get the members of the group
+    $members = Get-ADGroupMember -Identity $groupName
+
+    # Print the members
+    $members | Format-Table -Property Name, SamAccountName, ObjectClass
+} else {
+    Write-Host "The group '$groupName' does not exist."
+}
