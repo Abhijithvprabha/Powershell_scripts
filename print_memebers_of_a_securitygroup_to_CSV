@@ -1,0 +1,40 @@
+PowerShell to retrieve the members of an Active Directory group and export them to a CSV file 
+
+# Import the Active Directory module
+Import-Module ActiveDirectory
+
+# Ask the user for the group name
+$groupName = Read-Host -Prompt 'Please enter the name of the AD security group'
+
+# Get the group
+$group = Get-ADGroup -Identity $groupName
+
+# Check if the group exists
+if ($group) {
+    # Get the members of the group
+    $members = Get-ADGroupMember -Identity $groupName
+
+    # Array to store member details
+    $memberDetails = @()
+
+    # Loop through each member
+    foreach ($member in $members) {
+        $userDetails = Get-ADUser -Identity $member.SamAccountName -Properties Name, EmailAddress
+        $memberDetails += [PSCustomObject]@{
+            'Name'           = $userDetails.Name
+            'SamAccountName' = $member.SamAccountName
+            'ObjectClass'    = $member.ObjectClass
+            'EmailAddress'   = $userDetails.EmailAddress
+        }
+    }
+
+    # Display the members with email addresses
+    $memberDetails | Format-Table -AutoSize
+
+    # Save to CSV
+    $memberDetails | Export-Csv C:\Mystuff\ADGroupMembers.csv" 
+
+    Write-Host "Results saved to C:\Mystuff\"
+} else {
+    Write-Host "The group '$groupName' does not exist."
+}
