@@ -1,0 +1,23 @@
+prompt the user to enter a username, then retrieve the Active Directory groups associated with that user.
+
+# Prompt the user for the username
+$userName = Read-Host -Prompt "Enter the username"
+
+# Get the user object from Active Directory
+$user = Get-ADUser -Filter {SamAccountName -eq $userName}
+
+if ($user) {
+    # Get the list of groups the user is a member of
+    $userGroups = Get-ADPrincipalGroupMembership -Identity $user | Select-Object Name
+
+    if ($userGroups) {
+        Write-Host "Groups that $userName is a member of:"
+        $userGroups | ForEach-Object {
+            Write-Host $_.Name
+        }
+    } else {
+        Write-Host "No groups found for $userName."
+    }
+} else {
+    Write-Host "User $userName not found in Active Directory."
+}
