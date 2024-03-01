@@ -1,0 +1,18 @@
+ script that prompts the user to input the username and then checks when the account was disabled in Active Directory
+
+# Prompt the user to input the username
+$username = Read-Host -Prompt "Enter the username"
+
+# Get the account information from Active Directory
+$account = Get-ADUser -Identity $username -Properties *
+
+# Check if the account is disabled
+if ($account.Enabled -eq $false) {
+    Write-Host "The account '$username' is disabled."
+
+    # Get the date and time when the account was disabled
+    $disabledTime = $account.WhenChanged
+    Write-Host "The account was disabled on: $disabledTime"
+} else {
+    Write-Host "The account '$username' is enabled."
+}
