@@ -1,0 +1,33 @@
+Preparing the AD profile of a user to assign Team phone number in MS team admin center / Work related ; where I have exisitng an office 365 domestic calling license group 
+
+
+# Import the Active Directory module
+Import-Module ActiveDirectory
+
+# Prompt the user for input
+$DisplayName = Read-Host "Enter the display name"
+$PhoneNumber = Read-Host "Enter the phone number"
+$EmailAddress = Read-Host "Enter the user's email address"
+
+# Find the user account based on display name
+$User = Get-ADUser -Filter "DisplayName -eq '$DisplayName'"
+
+# Check if the user account exists
+if ($User -ne $null) {
+    # Print the username to the user
+    Write-Host "Username for display name '$DisplayName' is $($User.SamAccountName)"
+
+    # Set the IP phone number, telephone number, and SIP address
+    Set-ADUser -Identity $User -Replace @{ipPhone = $PhoneNumber; telephoneNumber = $PhoneNumber}
+    $sipAddress = "sip:$EmailAddress"
+    Set-ADUser -Identity $User -Add @{proxyAddresses = $sipAddress}
+
+    # Add user to the group
+    Add-ADGroupMember -Identity "MX_O365_Domestic_Calling" -Members $User
+
+    Write-Host "IP phone number, telephone number, and SIP address '$PhoneNumber' added successfully to user '$($User.SamAccountName)'."
+    Write-Host "User '$($User.SamAccountName)' added to the 'MX_O365_Domestic_Calling' group."
+} else {
+    Write-Host "User with display name '$DisplayName' not found in Active Directory."
+}
+
