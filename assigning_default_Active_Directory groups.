@@ -1,0 +1,35 @@
+assigning default Active Directory groups.
+
+# Specify the group names
+$Groups = @(
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F"
+)
+
+# Connect to the Active Directory module
+Import-Module ActiveDirectory
+
+# Prompt the user to input the usernames separated by commas
+$Usernames = Read-Host "Enter the usernames (comma-separated)"
+
+# Convert the input into an array of usernames
+$UsernameArray = $Usernames -split "," | ForEach-Object { $_.Trim() }
+
+# Loop through each username
+foreach ($Username in $UsernameArray) {
+    # Get the user object
+    $User = Get-ADUser -Identity $Username
+    if ($User) {
+        # Loop through each group and add the user
+        foreach ($Group in $Groups) {
+            $GroupObject = Get-ADGroup -Identity $Group -ErrorAction SilentlyContinue
+            if ($GroupObject) {
+                Add-ADGroupMember -Identity $Group -Members $User -ErrorAction SilentlyContinue
+                if ($?) {
+                    Write-Host "User '$Username' added to group '$Group'."
+                } else {
+                    Write-Host "Failed to add user '$Us
