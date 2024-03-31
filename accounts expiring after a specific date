@@ -1,0 +1,22 @@
+# Specify the target date (e.g., 30 March)
+$TargetDate = Get-Date "30 March"
+
+# Get the current date
+$CurrentDate = Get-Date
+
+# Calculate the number of days until the target date
+$DaysUntilExpiry = ($TargetDate - $CurrentDate).Days
+
+# Get users whose accounts are expiring soon (e.g., after 30 March)
+$ExpiringUsers = Get-ADUser -Filter {(AccountExpirationDate -gt $TargetDate) -and (Enabled -eq $true)} -Properties AccountExpirationDate
+
+# Filter users based on the number of days until expiry (e.g., 30 days)
+$UsersToNotify = $ExpiringUsers | Where-Object {($_.AccountExpirationDate - $CurrentDate).Days -le $DaysUntilExpiry}
+
+# Display the list of users to notify
+if ($UsersToNotify) {
+    Write-Host "Users whose accounts are expiring soon (after 30 March):"
+    $UsersToNotify | Format-Table Name, SamAccountName, AccountExpirationDate -AutoSize
+} else {
+    Write-Host "No users found whose accounts are expiring soon after 30 March."
+}
