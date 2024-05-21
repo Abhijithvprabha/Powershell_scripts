@@ -1,0 +1,26 @@
+# Import Active Directory module
+Import-Module ActiveDirectory
+
+# Prompt for AD group name
+$groupName = Read-Host "Enter the AD group name"
+
+# Get the group object
+$group = Get-ADGroup -Identity $groupName
+
+if ($group) {
+    # Prompt for user to add to the group
+    $userName = Read-Host "Enter the username to add to the group"
+
+    # Get the user object
+    $user = Get-ADUser -Identity $userName
+
+    if ($user) {
+        # Add user to group
+        Add-ADGroupMember -Identity $groupName -Members $user
+        Write-Host "User $userName has been added to the group $groupName."
+    } else {
+        Write-Host "User $userName not found."
+    }
+} else {
+    Write-Host "Group $groupName not found."
+}
