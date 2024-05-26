@@ -1,0 +1,28 @@
+PowerShell script that prompts the user to enter an Active Directory group name and then removes all members from that group:
+# Import the Active Directory module
+Import-Module ActiveDirectory
+
+# Prompt for the AD group name
+$groupName = Read-Host "Enter the name of the AD group"
+
+# Get the group object
+$group = Get-ADGroup -Identity $groupName -ErrorAction Stop
+
+# Get all members of the group
+$groupMembers = Get-ADGroupMember -Identity $groupName
+
+# Check if the group has any members
+if ($groupMembers.Count -eq 0) {
+    Write-Host "The group '$groupName' has no members."
+} else {
+    # Remove each member from the group
+    foreach ($member in $groupMembers) {
+        try {
+            Remove-ADGroupMember -Identity $groupName -Members $member -Confirm:$false
+            Write-Host "Removed $($member.Name) from $groupName"
+        } catch {
+            Write-Host "Failed to remove $($member.Name) from $groupName. Error: $_"
+        }
+    }
+    Write-Host "All members have been removed from the group '$groupName'."
+}
