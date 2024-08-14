@@ -1,0 +1,3 @@
+ check the calendar permissions for a user with the email john.doe@example.com
+ 
+ Get-MailboxFolderPermission -Identity john.doe@example.com:\Calendar
