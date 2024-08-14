@@ -1,3 +1,10 @@
- check the calendar permissions for a user with the email john.doe@example.com
+1) check the calendar permissions for a user with the email john.doe@example.com
  
  Get-MailboxFolderPermission -Identity john.doe@example.com:\Calendar
+
+2) Grant Calendar Permissions:
+
+  Add-MailboxFolderPermission -Identity <UserEmail>:\Calendar -User <DelegateEmail> -AccessRights Editor
+
+Use the Add-MailboxFolderPermission cmdlet to grant access to the calendar. Replace <UserEmail> with the email of the person whose calendar you want to share, and <DelegateEmail> with the email of the delegate.
+The -AccessRights parameter can be set to different permission levels such as Reviewer, Editor, or Owner.
