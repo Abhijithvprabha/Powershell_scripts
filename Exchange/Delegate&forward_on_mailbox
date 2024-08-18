@@ -1,0 +1,26 @@
+PowerShell script that will prompt for a user's email address and then print out any delegate or forwarding setups associated with that mailbox:
+
+# Prompt the user to enter the email address
+$userEmail = Read-Host -Prompt "Enter the user's email address"
+
+# Check and print any delegate access
+Write-Host "`nChecking for delegates assigned to $userEmail..."
+$delegates = Get-CalendarProcessing -Identity $userEmail | Select-Object -ExpandProperty ResourceDelegates
+if ($delegates) {
+    Write-Host "Delegates found:"
+    $delegates
+} else {
+    Write-Host "No delegates found."
+}
+
+# Check and print any forwarding rules
+Write-Host "`nChecking for forwarding rules in $userEmail's mailbox..."
+$forwardingRules = Get-InboxRule -Mailbox $userEmail | Where-Object {$_.ForwardTo -ne $null -or $_.ForwardAsAttachmentTo -ne $null}
+if ($forwardingRules) {
+    Write-Host "Forwarding rules found:"
+    $forwardingRules | Format-Table Name, ForwardTo, ForwardAsAttachmentTo
+} else {
+    Write-Host "No forwarding rules found."
+}
+
+Write-Host "`nCheck completed."
