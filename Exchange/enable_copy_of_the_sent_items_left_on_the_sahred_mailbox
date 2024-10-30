@@ -1,0 +1,2 @@
+Set-Mailbox <SharedMailboxIdentity> -MessageCopyForSentAsEnabled $true -MessageCopyForSendOnBehalfEnabled $true
+Replace <SharedMailboxIdentity> with the email address of the shared mailbox.
