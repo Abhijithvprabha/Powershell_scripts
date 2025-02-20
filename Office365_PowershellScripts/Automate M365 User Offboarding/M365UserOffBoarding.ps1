@@ -1,6 +1,7 @@
 #
 =============================================================================================
 Name:           Automate Microsoft 365 User Offboarding with PowerShell
+
 Description:    This script can perform 14 Microsoft 365 offboarding activities.
 
 param(
